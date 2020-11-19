@@ -5,9 +5,11 @@ const {TodoModel} = require('../models/todo.model')
 
 router.get("/", async (req, res) => {
   const docs = await TodoModel
-    .find({})
-    .exec();
+    .find({});
+    console.log(docs);
   res.json(docs);
 });
+
+router.get("/active")
 
 module.exports = router;
