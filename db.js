@@ -6,7 +6,8 @@ const dbName = 'todos-list';
 async function connect() {
  await mongoose.connect(`${dbUrl}/${dbName}`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false,
   });
 }
 
