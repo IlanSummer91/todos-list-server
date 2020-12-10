@@ -3,6 +3,13 @@ const router = express.Router();
 const {ObjectID} = require('mongodb');
 const {TodoModel} = require('../models/todo.model')
 
+router.route("/toggleAll")
+.patch(async (req, res) => {
+const completed = req.body.completed;
+const docs = await TodoModel.updateMany({},{$set: {completed}});
+res.json(docs);
+})
+
 router.route("/active")
 .get(async (req, res) => {
   const docs = await TodoModel
@@ -32,7 +39,7 @@ router.route("/:id")
       .exec();
     res.json({success: docs ? true : false});
   })
-  .put(async (req, res) => {
+  .patch(async (req, res) => {
     const docs = await TodoModel
       .findByIdAndUpdate(ObjectID.createFromHexString(req.params.id), req.body, {new: true})
       .exec();
@@ -49,12 +56,6 @@ router.route("/")
   .post(async (req, res) => {
     const docs = await TodoModel
       .create(req.body);
-    res.json(docs);
-  })
-
-  router.route("/toggleAll").patch(async (req, res) => {
-    const completed = req.body.completed;
-    const docs = await TodoModel.updateMany({},{$set: {completed}});
     res.json(docs);
   })
 
