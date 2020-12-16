@@ -4,10 +4,13 @@ const {ObjectID} = require('mongodb');
 const {TodoModel} = require('../models/todo.model')
 
 router.route("/toggleAll")
-.patch(async (req, res) => {
-const completed = req.body.completed;
-const docs = await TodoModel.updateMany({},{$set: {completed}});
-res.json(docs);
+  .patch(async (req, res) => {
+    const todos = await TodoModel.find({}).exec();
+    const isCompleted = todos.every(todo => todo.completed);
+    const docs = await TodoModel
+      .updateMany({},{$set: {completed: !isCompleted}})
+      .exec();
+    res.json(docs);
 })
 
 router.route("/active")
@@ -22,6 +25,12 @@ router.route("/completed")
   .get(async (req, res) => {
     const docs = await TodoModel
       .find({completed: true})
+      .exec();
+    res.json(docs);
+  })
+  .delete(async (req, res) => {
+    const docs = await TodoModel
+      .deleteMany({completed: true})
       .exec();
     res.json(docs);
   })
